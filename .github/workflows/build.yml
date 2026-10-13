@@ -1,0 +1,50 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "X.Y.Z[-suffix]"
+        required: true
+
+env:
+  VERSION: ${{ inputs.version || (github.ref_type == 'tag' && github.ref_name) || format('0.0.0-dev.{0}', github.run_number) }}
+
+jobs:
+  fuse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow
+      - run: sh ff update --platform all
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - id: fuse
+        run: |
+          sh ff fuse "${VERSION#v}"
+          echo "dist=.build/.out/${VERSION#v}" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: forcefall-${{ env.VERSION }}-win64
+          path: ${{ steps.fuse.outputs.dist }}/*_win64.zip
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: forcefall-${{ env.VERSION }}-linux
+          path: ${{ steps.fuse.outputs.dist }}/*_linux.AppImage
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: forcefall-${{ env.VERSION }}-macos
+          path: ${{ steps.fuse.outputs.dist }}/*_macos.zip
+          if-no-files-found: ignore

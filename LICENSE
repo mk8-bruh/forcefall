@@ -1,0 +1,13 @@
+Copyright (c) 2026 Matt Kordos. All rights reserved.
+
+This license applies to all source code, assets (including but not limited to art, audio, textures, and data files), and documentation contained within this repository.
+
+Permission is hereby granted to any person obtaining a copy of this software and associated documentation files to review, download, compile, and run the software privately for educational, personal, and non-commercial purposes. 
+
+You may NOT sell, rent, lease, sublicense, or otherwise commercially exploit this software, its source code, or its assets in whole or in part. You may not distribute compiled versions of this game on any commercial storefront (e.g., Steam, Itch.io, Google Play, Apple App Store) without explicit written permission from the copyright holder.
+
+Players are permitted and encouraged to create modifications ("mods") using the game's asset and core folder structure. 
+Mods may be shared freely and distributed non-commercially (including via Steam Workshop or third-party modding platforms).
+Mods must not contain substantial portions of the original commercial code or assets redistributed as a standalone game.
+
+By submitting a Pull Request, issue fix, or code contribution to this repository, you explicitly grant the copyright holder a perpetual, irrevocable, worldwide, royalty-free, and non-exclusive license to use, modify, distribute, and sell your contributed code as part of the commercial version of the game, without any obligation for compensation or attribution.

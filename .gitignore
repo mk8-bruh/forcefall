@@ -1,0 +1,3 @@
+assets/*/_drafts
+.build/
+__pycache__/

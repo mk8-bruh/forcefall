@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "key": "anakin",
+    "name": "Anakin",
+    "class": "melee",
+    "side": "light",
+    "era": "clone-wars",
+    "faction": "republic"
+  },
+  {
+    "id": 2,
+    "key": "obiwan",
+    "name": "Obi-Wan",
+    "class": "melee",
+    "side": "light",
+    "era": "clone-wars",
+    "faction": "republic"
+  }
+]

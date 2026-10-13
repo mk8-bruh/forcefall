@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "key": "light",
+    "name": "Light Side",
+    "color": [
+      0.35,
+      0.78,
+      1.0
+    ]
+  },
+  {
+    "id": 2,
+    "key": "dark",
+    "name": "Dark Side",
+    "color": [
+      1.0,
+      0.45,
+      0.42
+    ]
+  }
+]

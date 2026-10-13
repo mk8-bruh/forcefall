@@ -1,0 +1,119 @@
+[
+  {
+    "id": 1,
+    "key": "headhunters-solo",
+    "label": "Headhunters (solo)",
+    "format": "headhunters",
+    "manualSpawning": false,
+    "allowMidMatchJoin": false,
+    "characterChoice": true,
+    "params": {
+      "rounds": {
+        "default": 5,
+        "min": 3,
+        "max": 15
+      }
+    }
+  },
+  {
+    "id": 2,
+    "key": "headhunters-team",
+    "label": "Headhunters (team)",
+    "format": "headhunters",
+    "manualSpawning": false,
+    "allowMidMatchJoin": false,
+    "characterChoice": true,
+    "teams": [
+      1,
+      2
+    ],
+    "params": {
+      "rounds": {
+        "default": 5,
+        "min": 3,
+        "max": 15
+      }
+    }
+  },
+  {
+    "id": 3,
+    "key": "true-headhunters-solo",
+    "label": "True Headhunters (solo)",
+    "format": "headhunters",
+    "manualSpawning": false,
+    "allowMidMatchJoin": false,
+    "characterChoice": false,
+    "params": {
+      "rounds": {
+        "default": 5,
+        "min": 3,
+        "max": 15
+      }
+    }
+  },
+  {
+    "id": 4,
+    "key": "true-headhunters-team",
+    "label": "True Headhunters (team)",
+    "format": "headhunters",
+    "manualSpawning": false,
+    "allowMidMatchJoin": false,
+    "characterChoice": false,
+    "teams": [
+      1,
+      2
+    ],
+    "params": {
+      "rounds": {
+        "default": 5,
+        "min": 3,
+        "max": 15
+      }
+    }
+  },
+  {
+    "id": 5,
+    "key": "supremacy",
+    "label": "Supremacy",
+    "format": "supremacy",
+    "manualSpawning": true,
+    "allowMidMatchJoin": true,
+    "characterChoice": true,
+    "teams": [
+      1,
+      2
+    ],
+    "params": {
+      "spawns": {
+        "default": 40,
+        "min": 16,
+        "max": 160
+      }
+    }
+  },
+  {
+    "id": 6,
+    "key": "ffa",
+    "label": "Free for all",
+    "format": "supremacy",
+    "manualSpawning": true,
+    "allowMidMatchJoin": true,
+    "characterChoice": true,
+    "params": {
+      "spawns": {
+        "default": 5,
+        "min": 3,
+        "max": 15
+      }
+    }
+  },
+  {
+    "id": 7,
+    "key": "coop",
+    "label": "Co-op",
+    "format": "coop",
+    "manualSpawning": true,
+    "allowMidMatchJoin": true,
+    "characterChoice": true
+  }
+]
