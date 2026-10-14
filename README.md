@@ -34,3 +34,9 @@ forcefall_<VERSION>_admin_win64.zip
 forcefall_<VERSION>_admin_linux.AppImage
 forcefall_<VERSION>_admin_macos.zip
 ```
+
+## CI
+
+- every push to `main` builds `dev.<run number>` (downloadable from run artifacts)
+- release: Actions, build, Run workflow, pick `patch`/`minor`/`major`: bumps the latest `vX.Y.Z` tag, builds, tags the commit and publishes GitHub Release
+- add `[skip ci]` to commit message to skip dev build

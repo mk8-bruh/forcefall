@@ -20,6 +20,7 @@ DIST = BUILD / ".out"
 CACHE = BUILD / "cache"
 
 VERSION_RE = re.compile(r"^(\d+)\.(\d+)\.(\d+)(?:[-+][0-9A-Za-z.+-]+)?$")
+DEV_RE = re.compile(r"^dev\.\d+$")
 BUNDLE_PREFIX = "com.forcefall"
 ICON = ROOT / "assets" / "icon.png"
 WINRES = "github.com/tc-hib/go-winres@v0.3.3"
@@ -217,7 +218,8 @@ def winres_tool():
 
 
 def numeric(version):
-    return ".".join(VERSION_RE.match(version).groups())
+    m = VERSION_RE.match(version)
+    return ".".join(m.groups()) if m else "0.0.0"
 
 
 def patch_win_exe(exe, target, version):
@@ -389,8 +391,8 @@ FUSERS = {"win64": fuse_win64, "linux": fuse_linux, "macos": fuse_macos}
 
 
 def cmd_fuse(args):
-    if not VERSION_RE.match(args.version):
-        sys.exit(f"invalid version '{args.version}', expected X.Y.Z[-suffix]")
+    if not (VERSION_RE.match(args.version) or DEV_RE.match(args.version)):
+        sys.exit(f"invalid version '{args.version}', expected X.Y.Z[-suffix] or dev.N")
     if args.target == "all":
         targets = [t for t, c in TARGETS.items() if (ROOT / c["sources"][0][0] / "main.lua").exists()]
         log("targets:", ", ".join(targets) or "none")
@@ -441,7 +443,7 @@ def main():
     s.set_defaults(func=cmd_pack)
 
     s = sub.add_parser("fuse", help="fuse executables into .build/.out/<version>/<target>_<platform>")
-    s.add_argument("version", help="X.Y.Z[-suffix]")
+    s.add_argument("version", help="X.Y.Z[-suffix] or dev.N")
     s.add_argument("target", nargs="?", default="all")
     s.add_argument("-p", "--platform", default=["all"], **plat_arg)
     s.set_defaults(func=cmd_fuse)

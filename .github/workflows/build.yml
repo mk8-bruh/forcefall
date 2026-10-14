@@ -3,21 +3,51 @@ name: build
 on:
   push:
     branches: [main]
-    tags: ["v*"]
   workflow_dispatch:
     inputs:
-      version:
-        description: "X.Y.Z[-suffix]"
+      bump:
+        description: release type
+        type: choice
+        options: [patch, minor, major]
+        default: patch
         required: true
 
-env:
-  VERSION: ${{ inputs.version || (github.ref_type == 'tag' && github.ref_name) || format('0.0.0-dev.{0}', github.run_number) }}
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.event_name == 'workflow_dispatch' && 'release' || github.run_id }}
 
 jobs:
-  fuse:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: version
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != workflow_dispatch ]; then
+            v="dev.$GITHUB_RUN_NUMBER"
+          else
+            [ "$GITHUB_REF" = refs/heads/main ] || { echo "releases only from main"; exit 1; }
+            last=$(git tag --list 'v[0-9]*' --sort=-v:refname | head -n1)
+            IFS=. read -r major minor patch <<< "${last:-v0.0.0}"
+            major=${major#v}
+            case "$BUMP" in
+              major) major=$((major+1)); minor=0; patch=0 ;;
+              minor) minor=$((minor+1)); patch=0 ;;
+              patch) patch=$((patch+1)) ;;
+            esac
+            v="$major.$minor.$patch"
+            echo "${last:-none} -> $v"
+          fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          echo "dist=.build/.out/$v" >> "$GITHUB_OUTPUT"
+
       - uses: actions/setup-go@v5
         with:
           go-version: stable
@@ -29,22 +59,27 @@ jobs:
       - run: sh ff update --platform all
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - id: fuse
-        run: |
-          sh ff fuse "${VERSION#v}"
-          echo "dist=.build/.out/${VERSION#v}" >> "$GITHUB_OUTPUT"
+      - run: sh ff fuse "${{ steps.version.outputs.version }}"
+
       - uses: actions/upload-artifact@v4
         with:
-          name: forcefall-${{ env.VERSION }}-win64
-          path: ${{ steps.fuse.outputs.dist }}/*_win64.zip
+          name: forcefall_${{ steps.version.outputs.version }}_win64
+          path: ${{ steps.version.outputs.dist }}/*_win64.zip
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         with:
-          name: forcefall-${{ env.VERSION }}-linux
-          path: ${{ steps.fuse.outputs.dist }}/*_linux.AppImage
+          name: forcefall_${{ steps.version.outputs.version }}_linux
+          path: ${{ steps.version.outputs.dist }}/*_linux.AppImage
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         with:
-          name: forcefall-${{ env.VERSION }}-macos
-          path: ${{ steps.fuse.outputs.dist }}/*_macos.zip
+          name: forcefall_${{ steps.version.outputs.version }}_macos
+          path: ${{ steps.version.outputs.dist }}/*_macos.zip
           if-no-files-found: ignore
+
+      - if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          V: ${{ steps.version.outputs.version }}
+          DIST: ${{ steps.version.outputs.dist }}
+        run: gh release create "v$V" --target "$GITHUB_SHA" --title "v$V" --generate-notes "$DIST"/*
